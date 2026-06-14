@@ -53,10 +53,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "facility_booking.wsgi.application"
 
+db_engine = os.getenv("DB_ENGINE")
 use_sqlite = os.getenv("USE_SQLITE", "").lower() == "true"
-running_tests = "test" in sys.argv and not os.getenv("DB_ENGINE")
+running_tests = "test" in sys.argv and not db_engine
 
-if use_sqlite or running_tests:
+if use_sqlite or running_tests or not db_engine:
     sqlite_name = os.getenv("SQLITE_NAME") or BASE_DIR / "db.sqlite3"
     DATABASES = {
         "default": {
@@ -67,7 +68,7 @@ if use_sqlite or running_tests:
 else:
     DATABASES = {
         "default": {
-            "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.mysql"),
+            "ENGINE": db_engine,
             "NAME": os.getenv("DB_NAME", "facility_booking"),
             "USER": os.getenv("DB_USER", "root"),
             "PASSWORD": os.getenv("DB_PASSWORD", ""),

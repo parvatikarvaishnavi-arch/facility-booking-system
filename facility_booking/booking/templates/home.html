@@ -2,60 +2,94 @@
 
 {% block title %}Facility Booking System{% endblock %}
 
+{% block breadcrumbs %}
+<nav class="app-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li aria-current="page">Facility Overview</li>
+    </ol>
+    <div class="breadcrumb-actions" aria-label="Booking sections">
+        <a href="{% url 'hall_booking' %}">Hall</a>
+        <a href="{% url 'studio_booking' %}">Studio</a>
+        <a href="{% url 'lounge_booking' %}">Lounge</a>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
 <section class="home-hero">
     <div class="hero-copy">
-        <p class="eyebrow">Django + MySQL Booking App</p>
+        <p class="eyebrow">Facility reservations</p>
         <h1>Facility Booking System</h1>
-        <p class="lead">Reserve halls, studios, and lounges with automatic availability checks, pricing, and booking rules.</p>
+        <p class="lead">Reserve halls, studios, and lounges with clear availability, pricing, and booking rules before conflicts reach the schedule.</p>
         <div class="hero-actions">
             <a class="btn btn-light" href="{% url 'hall_booking' %}">Book Hall</a>
             <a class="btn btn-outline-light" href="{% url 'studio_booking' %}">Book Studio</a>
             <a class="btn btn-outline-light" href="{% url 'lounge_booking' %}">Book Lounge</a>
         </div>
     </div>
+    <div class="hero-status" aria-label="Upcoming booking summary">
+        <span>Live schedule</span>
+        <strong>{{ upcoming_count }}</strong>
+        <small>confirmed upcoming bookings</small>
+    </div>
 </section>
 
-<section class="hero-stat-strip">
-    <div>
+<section class="overview-strip" aria-label="Booking summary">
+    <div class="overview-item">
         <span>Upcoming bookings</span>
         <strong>{{ upcoming_count }}</strong>
     </div>
-    <div>
+    <div class="overview-item">
         <span>Operating hours</span>
         <strong>8:00 AM - 10:00 PM</strong>
     </div>
-    <div>
+    <div class="overview-item">
         <span>Lounge benefit</span>
         <strong>First 4 hours free</strong>
     </div>
 </section>
 
-<section class="quick-actions">
-    {% for item in facility_summary %}
-        <a class="action-card" href="{% url item.url_name %}">
-            <span>{{ item.name }}</span>
-            <strong>{{ item.count }} available</strong>
-            <p>{{ item.rule }}</p>
-        </a>
-    {% endfor %}
+<section class="landing-section">
+    <div class="section-heading home-section-heading">
+        <div>
+            <p class="section-kicker">Booking paths</p>
+            <h2>Choose the right space</h2>
+        </div>
+        <span class="section-note">Availability and rules are checked before confirmation.</span>
+    </div>
+    <div class="quick-actions">
+        {% for item in facility_summary %}
+            <a class="action-card" href="{% url item.url_name %}">
+                <span class="action-card-top">
+                    <span>{{ item.name }}</span>
+                    <span class="action-arrow" aria-hidden="true">&rarr;</span>
+                </span>
+                <strong>{{ item.count }} available</strong>
+                <p>{{ item.rule }}</p>
+            </a>
+        {% endfor %}
+    </div>
 </section>
 
 <div class="home-grid mt-4">
     <section class="tool-panel">
         <div class="section-heading">
-            <h2>Booking rules</h2>
-        </div>
-        <div class="rule-cards">
             <div>
+                <p class="section-kicker">Policy checks</p>
+                <h2>Booking rules</h2>
+            </div>
+        </div>
+        <div class="rule-list-grid">
+            <div class="rule-row">
                 <span>Hall</span>
                 <strong>No overlap + 1 hour gap</strong>
             </div>
-            <div>
+            <div class="rule-row">
                 <span>Studio</span>
                 <strong>No overlap + 30 minute gap</strong>
             </div>
-            <div>
+            <div class="rule-row">
                 <span>Lounge</span>
                 <strong>One free booking up to 4 hours</strong>
             </div>
@@ -64,7 +98,10 @@
 
     <section class="tool-panel">
         <div class="section-heading">
-            <h2>Quick workflow</h2>
+            <div>
+                <p class="section-kicker">How it flows</p>
+                <h2>Quick workflow</h2>
+            </div>
         </div>
         <ol class="workflow-list">
             <li>Select a facility type from the navbar or cards.</li>
@@ -76,7 +113,10 @@
 
 <section class="tool-panel mt-4">
     <div class="section-heading">
-        <h2>Upcoming bookings</h2>
+        <div>
+            <p class="section-kicker">Schedule</p>
+            <h2>Upcoming bookings</h2>
+        </div>
     </div>
     {% if upcoming_bookings %}
         <div class="table-responsive">

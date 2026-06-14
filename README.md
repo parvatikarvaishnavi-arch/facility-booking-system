@@ -1,6 +1,6 @@
 # Facility Booking System
 
-A Django + MySQL facility booking application for halls, studios, and lounges.
+A Django facility booking application for halls, studios, and lounges. It uses SQLite by default for local setup, so no separate database software is required.
 
 ## Features
 
@@ -18,12 +18,16 @@ A Django + MySQL facility booking application for halls, studios, and lounges.
 
 - Python 3.9+
 - Django 4.2 LTS
-- MySQL 8+
+- SQLite for local development
 - Bootstrap 5
 
 ## Setup
 
-1. Create and activate a virtual environment:
+SQLite is included with Python, and Django creates the local `db.sqlite3` file when migrations run. You only need Python 3.9+ installed; no database server or native database client libraries are required.
+
+### macOS or Linux
+
+1. Create and activate a virtual environment from the project root:
 
    ```bash
    python3 -m venv .venv
@@ -33,46 +37,65 @@ A Django + MySQL facility booking application for halls, studios, and lounges.
 2. Install dependencies:
 
    ```bash
-   pip install -r requirements.txt
+   python3 -m pip install -r requirements.txt
    ```
 
-   On macOS, `mysqlclient` requires MySQL client libraries. If installation fails, install MySQL or MariaDB development files first, then rerun the command.
-
-3. Create a MySQL database:
-
-   ```sql
-   CREATE DATABASE facility_booking CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-
-4. Create `.env` from the example and update database credentials:
+3. Run migrations and load sample facilities:
 
    ```bash
-   cp .env.example .env
+   cd facility_booking
+   python3 manage.py migrate
+   python3 manage.py loaddata sample_data
    ```
 
-5. Export environment variables before running Django:
+4. Optional: create an admin user:
 
    ```bash
-   export $(grep -v '^#' .env | xargs)
+   python3 manage.py createsuperuser
    ```
 
-6. Run migrations and load sample facilities:
+5. Start the server:
 
    ```bash
+   python3 manage.py runserver
+   ```
+
+Open `http://127.0.0.1:8000/`.
+
+### Windows PowerShell
+
+1. Create and activate a virtual environment from the project root:
+
+   ```powershell
+   py -3 -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+   If `py -3` is not available, use `python` instead.
+
+2. Install dependencies:
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+
+3. Run migrations and load sample facilities:
+
+   ```powershell
    cd facility_booking
    python manage.py migrate
    python manage.py loaddata sample_data
    ```
 
-7. Create an admin user:
+4. Optional: create an admin user:
 
-   ```bash
+   ```powershell
    python manage.py createsuperuser
    ```
 
-8. Start the server:
+5. Start the server:
 
-   ```bash
+   ```powershell
    python manage.py runserver
    ```
 
@@ -80,20 +103,18 @@ Open `http://127.0.0.1:8000/`.
 
 ## Testing
 
-Tests automatically use SQLite when `manage.py test` is run without `DB_ENGINE`.
+Tests use SQLite by default.
 
 ```bash
 cd facility_booking
-python manage.py test
+python3 manage.py test
 ```
 
-To run the app locally without MySQL, use the SQLite fallback:
+On Windows PowerShell, use:
 
-```bash
+```powershell
 cd facility_booking
-USE_SQLITE=True python manage.py migrate
-USE_SQLITE=True python manage.py loaddata sample_data
-USE_SQLITE=True python manage.py runserver
+python manage.py test
 ```
 
 ## Booking Rules Implemented
@@ -109,7 +130,7 @@ USE_SQLITE=True python manage.py runserver
 
 ## Database Schema
 
-The SQL schema is documented in [`docs/database_schema.sql`](docs/database_schema.sql).
+The SQL schema is documented in [`docs/database_schema.sql`](docs/database_schema.sql). The app uses SQLite locally unless `DB_ENGINE` is set to another Django database backend.
 
 Core tables:
 
@@ -125,8 +146,10 @@ Load them with:
 
 ```bash
 cd facility_booking
-python manage.py loaddata sample_data
+python3 manage.py loaddata sample_data
 ```
+
+On Windows PowerShell, use `python manage.py loaddata sample_data` from the `facility_booking` directory.
 
 ## Assumptions
 
@@ -139,9 +162,10 @@ For production deployment:
 - Set `DEBUG=False`.
 - Set a strong `SECRET_KEY`.
 - Set `ALLOWED_HOSTS` to the deployed domain.
-- Use a managed MySQL database.
-- Run `python manage.py collectstatic`.
+- Run `python3 manage.py collectstatic` on macOS/Linux, or `python manage.py collectstatic` on Windows.
 - Serve with Gunicorn/uWSGI behind Nginx or deploy to a Django-friendly platform.
+
+MySQL is optional. If you choose to use MySQL instead of SQLite, install the correct database driver, set `DB_ENGINE=django.db.backends.mysql`, and provide `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT`.
 
 ## Submission Links
 

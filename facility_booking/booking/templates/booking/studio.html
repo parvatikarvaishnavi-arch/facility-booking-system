@@ -2,7 +2,20 @@
 
 {% block title %}Studio Booking{% endblock %}
 
+{% block breadcrumbs %}
+<nav class="app-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li aria-current="page">Studio Booking</li>
+    </ol>
+    <div class="breadcrumb-actions" aria-label="Booking sections">
+        <a href="{% url 'hall_booking' %}">Hall</a>
+        <a aria-current="page" href="{% url 'studio_booking' %}">Studio</a>
+        <a href="{% url 'lounge_booking' %}">Lounge</a>
+    </div>
+</nav>
+{% endblock %}
+
 {% block content %}
     {% include "booking/_booking_page.html" %}
 {% endblock %}
-
