@@ -1,0 +1,77 @@
+[
+  {
+    "model": "booking.facility",
+    "pk": 1,
+    "fields": {
+      "name": "Grand Hall",
+      "slug": "grand-hall",
+      "facility_type": "hall",
+      "member_charge": "1000.00",
+      "non_member_charge": "1500.00",
+      "operating_start": "08:00:00",
+      "operating_end": "22:00:00",
+      "active": true,
+      "created_at": "2026-06-14T00:00:00Z"
+    }
+  },
+  {
+    "model": "booking.facility",
+    "pk": 2,
+    "fields": {
+      "name": "Conference Hall",
+      "slug": "conference-hall",
+      "facility_type": "hall",
+      "member_charge": "800.00",
+      "non_member_charge": "1200.00",
+      "operating_start": "08:00:00",
+      "operating_end": "22:00:00",
+      "active": true,
+      "created_at": "2026-06-14T00:00:00Z"
+    }
+  },
+  {
+    "model": "booking.facility",
+    "pk": 3,
+    "fields": {
+      "name": "Podcast Studio",
+      "slug": "podcast-studio",
+      "facility_type": "studio",
+      "member_charge": "500.00",
+      "non_member_charge": "800.00",
+      "operating_start": "08:00:00",
+      "operating_end": "22:00:00",
+      "active": true,
+      "created_at": "2026-06-14T00:00:00Z"
+    }
+  },
+  {
+    "model": "booking.facility",
+    "pk": 4,
+    "fields": {
+      "name": "Photo Studio",
+      "slug": "photo-studio",
+      "facility_type": "studio",
+      "member_charge": "700.00",
+      "non_member_charge": "1000.00",
+      "operating_start": "08:00:00",
+      "operating_end": "22:00:00",
+      "active": true,
+      "created_at": "2026-06-14T00:00:00Z"
+    }
+  },
+  {
+    "model": "booking.facility",
+    "pk": 5,
+    "fields": {
+      "name": "Member Lounge",
+      "slug": "member-lounge",
+      "facility_type": "lounge",
+      "member_charge": "300.00",
+      "non_member_charge": "450.00",
+      "operating_start": "08:00:00",
+      "operating_end": "22:00:00",
+      "active": true,
+      "created_at": "2026-06-14T00:00:00Z"
+    }
+  }
+]

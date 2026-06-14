@@ -1,0 +1,133 @@
+<section class="page-header compact">
+    <div>
+        <p class="eyebrow">Booking</p>
+        <h1>{{ title }}</h1>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="tool-panel">
+            <h2>Create booking</h2>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% for field in form %}
+                    {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check mb-3">
+                            {{ field }}
+                            <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% for error in field.errors %}<div class="invalid-copy">{{ error }}</div>{% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}<div class="invalid-copy">{{ error }}</div>{% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <button class="btn btn-primary w-100" type="submit">Confirm booking</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="tool-panel">
+                    <div class="section-heading">
+                        <h2>Facilities and pricing</h2>
+                    </div>
+                    <div class="row g-3">
+                        {% for facility in facilities %}
+                            <div class="col-md-6">
+                                <div class="facility-card">
+                                    <h3>{{ facility.name }}</h3>
+                                    <p>{{ facility.operating_start|time:"g:i A" }} - {{ facility.operating_end|time:"g:i A" }}</p>
+                                    <div class="price-grid">
+                                        <span>Member</span><strong>INR {{ facility.member_charge }}/hr</strong>
+                                        <span>Non-member</span><strong>INR {{ facility.non_member_charge }}/hr</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="empty-state">No active facilities configured for this category.</p>
+                        {% endfor %}
+                    </div>
+                    <ul class="rule-list">
+                        {% for note in notes %}
+                            <li>{{ note }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="tool-panel">
+                    <div class="section-heading with-form">
+                        <h2>Availability for {{ selected_date }}</h2>
+                        <form method="get" class="date-filter">
+                            <input class="form-control" type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+                            <button class="btn btn-outline-primary" type="submit">View</button>
+                        </form>
+                    </div>
+
+                    {% for facility, slots in availability.items %}
+                        <div class="availability-block">
+                            <h3>{{ facility.name }}</h3>
+                            {% if slots %}
+                                <div class="slot-list">
+                                    {% for slot in slots|slice:":12" %}
+                                        <span>{{ slot.label }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="empty-state small">No 1-hour slots available.</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="mt-3">
+                        <h3 class="subheading">Confirmed bookings</h3>
+                        {% if daily_bookings %}
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Facility</th>
+                                            <th>Customer</th>
+                                            <th>Time</th>
+                                            <th>Charge</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in daily_bookings %}
+                                            <tr>
+                                                <td>{{ booking.facility.name }}</td>
+                                                <td>{{ booking.customer_name }}</td>
+                                                <td>{{ booking.start_time|time:"g:i A" }} - {{ booking.end_time|time:"g:i A" }}</td>
+                                                <td>
+                                                    {% if booking.is_complimentary %}
+                                                        Complimentary
+                                                    {% else %}
+                                                        INR {{ booking.total_charge }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="empty-state small">No confirmed bookings for this date.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

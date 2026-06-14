@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Facility Booking System{% endblock %}
+
+{% block content %}
+<section class="home-hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Django + MySQL Booking App</p>
+        <h1>Facility Booking System</h1>
+        <p class="lead">Reserve halls, studios, and lounges with automatic availability checks, pricing, and booking rules.</p>
+        <div class="hero-actions">
+            <a class="btn btn-light" href="{% url 'hall_booking' %}">Book Hall</a>
+            <a class="btn btn-outline-light" href="{% url 'studio_booking' %}">Book Studio</a>
+            <a class="btn btn-outline-light" href="{% url 'lounge_booking' %}">Book Lounge</a>
+        </div>
+    </div>
+</section>
+
+<section class="hero-stat-strip">
+    <div>
+        <span>Upcoming bookings</span>
+        <strong>{{ upcoming_count }}</strong>
+    </div>
+    <div>
+        <span>Operating hours</span>
+        <strong>8:00 AM - 10:00 PM</strong>
+    </div>
+    <div>
+        <span>Lounge benefit</span>
+        <strong>First 4 hours free</strong>
+    </div>
+</section>
+
+<section class="quick-actions">
+    {% for item in facility_summary %}
+        <a class="action-card" href="{% url item.url_name %}">
+            <span>{{ item.name }}</span>
+            <strong>{{ item.count }} available</strong>
+            <p>{{ item.rule }}</p>
+        </a>
+    {% endfor %}
+</section>
+
+<div class="home-grid mt-4">
+    <section class="tool-panel">
+        <div class="section-heading">
+            <h2>Booking rules</h2>
+        </div>
+        <div class="rule-cards">
+            <div>
+                <span>Hall</span>
+                <strong>No overlap + 1 hour gap</strong>
+            </div>
+            <div>
+                <span>Studio</span>
+                <strong>No overlap + 30 minute gap</strong>
+            </div>
+            <div>
+                <span>Lounge</span>
+                <strong>One free booking up to 4 hours</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="tool-panel">
+        <div class="section-heading">
+            <h2>Quick workflow</h2>
+        </div>
+        <ol class="workflow-list">
+            <li>Select a facility type from the navbar or cards.</li>
+            <li>Choose facility, date, start time, and end time.</li>
+            <li>Submit booking and get instant validation messages.</li>
+        </ol>
+    </section>
+</div>
+
+<section class="tool-panel mt-4">
+    <div class="section-heading">
+        <h2>Upcoming bookings</h2>
+    </div>
+    {% if upcoming_bookings %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Charge</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in upcoming_bookings %}
+                        <tr>
+                            <td>{{ booking.facility.name }}</td>
+                            <td>{{ booking.customer_name }}</td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.start_time|time:"g:i A" }} - {{ booking.end_time|time:"g:i A" }}</td>
+                            <td>
+                                {% if booking.is_complimentary %}
+                                    Complimentary
+                                {% else %}
+                                    INR {{ booking.total_charge }}
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <form method="post" action="{% url 'cancel_booking' booking.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Cancel</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">No upcoming bookings yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
