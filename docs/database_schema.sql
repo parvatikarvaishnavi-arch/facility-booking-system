@@ -1,5 +1,5 @@
 CREATE TABLE booking_facility (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id CHAR(32) NOT NULL PRIMARY KEY,
     name VARCHAR(120) NOT NULL,
     slug VARCHAR(140) NOT NULL,
     facility_type VARCHAR(20) NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE booking_facility (
 );
 
 CREATE TABLE booking_booking (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    facility_id BIGINT NOT NULL,
+    id CHAR(32) NOT NULL PRIMARY KEY,
+    facility_id CHAR(32) NOT NULL,
     customer_name VARCHAR(120) NOT NULL,
     customer_email VARCHAR(254) NOT NULL,
     booking_date DATE NOT NULL,
@@ -27,26 +27,13 @@ CREATE TABLE booking_booking (
     status VARCHAR(20) NOT NULL DEFAULT 'confirmed',
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NOT NULL,
-    CONSTRAINT booking_facility_fk FOREIGN KEY (facility_id) REFERENCES booking_facility(id),
+    CONSTRAINT booking_facility_fk FOREIGN KEY (facility_id) REFERENCES booking_facility(id) ON DELETE RESTRICT,
     CONSTRAINT booking_end_after_start CHECK (end_time > start_time)
 );
 
-CREATE INDEX booking_facility_date_status_idx
+CREATE INDEX booking_boo_facilit_1dc6bd_idx
     ON booking_booking (facility_id, booking_date, status);
 
-CREATE INDEX booking_customer_date_idx
+CREATE INDEX booking_boo_custome_954457_idx
     ON booking_booking (customer_email, booking_date);
-
-CREATE TABLE booking_complimentarylounge (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    customer_email VARCHAR(254) NOT NULL UNIQUE,
-    customer_name VARCHAR(120) NOT NULL,
-    free_booking_used BOOLEAN NOT NULL DEFAULT FALSE,
-    booking_id BIGINT NULL UNIQUE,
-    used_at DATETIME(6) NULL,
-    created_at DATETIME(6) NOT NULL,
-    CONSTRAINT complimentary_lounge_booking_fk
-        FOREIGN KEY (booking_id) REFERENCES booking_booking(id)
-        ON DELETE SET NULL
-);
 
