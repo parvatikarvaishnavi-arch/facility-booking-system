@@ -1,10 +1,15 @@
 #!/usr/bin/env python
-"""Django command-line utility for administrative tasks."""
+"""Command-line entry point for running the Django project."""
 import os
 import sys
 
 
 def main():
+    """Run administrative tasks for the Django project.
+
+    Returns:
+        None
+    """
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "facility_booking.settings")
     from django.core.management import execute_from_command_line
 

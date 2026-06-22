@@ -1,7 +1,7 @@
+"""View functions for the booking application."""
 from datetime import date
 
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from .forms import BookingForm
 from .models import Booking, Facility
-from .services import create_booking, generate_available_slots
+from .services import BookingValidationError, create_booking, generate_available_slots
 
 
 PAGE_CONFIG = {
@@ -47,6 +47,14 @@ PAGE_CONFIG = {
 
 
 def parse_selected_date(raw_date):
+    """Return a valid selected date, falling back to today when needed.
+
+    Args:
+        raw_date: The raw date string from the request.
+
+    Returns:
+        A date object representing the selected date.
+    """
     if not raw_date:
         return timezone.localdate()
     try:
@@ -56,6 +64,14 @@ def parse_selected_date(raw_date):
 
 
 def home(request):
+    """Render the home page with upcoming bookings and facility summaries.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        The rendered home page response.
+    """
     today = timezone.localdate()
     upcoming_query = (
         Booking.objects.select_related("facility")
@@ -99,6 +115,15 @@ def home(request):
 
 
 def booking_page(request, facility_type):
+    """Render the booking page for a specific facility type.
+
+    Args:
+        request: The HTTP request object.
+        facility_type: The facility type to display.
+
+    Returns:
+        The rendered booking page response.
+    """
     config = PAGE_CONFIG[facility_type]
     selected_date = parse_selected_date(request.GET.get("date"))
     facilities = Facility.objects.filter(active=True, facility_type=facility_type)
@@ -108,8 +133,8 @@ def booking_page(request, facility_type):
         if form.is_valid():
             try:
                 booking = create_booking(**form.cleaned_data)
-            except ValidationError as exc:
-                messages.error(request, exc.messages[0])
+            except BookingValidationError as exc:
+                messages.error(request, str(exc))
             else:
                 if booking.is_complimentary:
                     messages.success(request, "Complimentary lounge booking confirmed.")
@@ -160,18 +185,30 @@ def booking_page(request, facility_type):
 
 
 def hall_booking(request):
+    """Render the hall booking page."""
     return booking_page(request, Facility.Type.HALL)
 
 
 def studio_booking(request):
+    """Render the studio booking page."""
     return booking_page(request, Facility.Type.STUDIO)
 
 
 def lounge_booking(request):
+    """Render the lounge booking page."""
     return booking_page(request, Facility.Type.LOUNGE)
 
 
 def cancel_booking(request, pk):
+    """Cancel a confirmed booking by its primary key.
+
+    Args:
+        request: The HTTP request object.
+        pk: The booking primary key.
+
+    Returns:
+        A redirect response to the home page.
+    """
     booking = get_object_or_404(Booking, pk=pk, status=Booking.Status.CONFIRMED)
     if request.method == "POST":
         booking.status = Booking.Status.CANCELLED

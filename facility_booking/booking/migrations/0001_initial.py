@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="facility",
             constraint=models.CheckConstraint(
-                check=models.Q(("operating_end__gt", models.F("operating_start"))),
+                condition=models.Q(("operating_end__gt", models.F("operating_start"))),
                 name="facility_operating_end_after_start",
             ),
         ),
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name="booking",
             constraint=models.CheckConstraint(
-                check=models.Q(("end_time__gt", models.F("start_time"))),
+                condition=models.Q(("end_time__gt", models.F("start_time"))),
                 name="booking_end_after_start",
             ),
         ),

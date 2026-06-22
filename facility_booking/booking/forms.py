@@ -1,3 +1,4 @@
+"""Forms used for booking interactions."""
 from django import forms
 
 from .models import Booking, Facility
@@ -5,7 +6,11 @@ from .services import normalize_email
 
 
 class BookingForm(forms.ModelForm):
+    """Form for creating and validating booking requests."""
+
     class Meta:
+        """Metadata for the booking form."""
+
         model = Booking
         fields = [
             "facility",
@@ -26,6 +31,11 @@ class BookingForm(forms.ModelForm):
         }
 
     def __init__(self, *args, facility_type=None, **kwargs):
+        """Initialize the form and limit facilities by type if provided.
+
+        Args:
+            facility_type: Optional facility type used to filter choices.
+        """
         super().__init__(*args, **kwargs)
         queryset = Facility.objects.filter(active=True)
         if facility_type:
@@ -42,9 +52,22 @@ class BookingForm(forms.ModelForm):
         self.fields["facility"].widget.attrs["class"] = "form-select"
 
     def clean_customer_email(self):
+        """Normalize the customer email before validation.
+
+        Returns:
+            A trimmed, lowercase email address.
+        """
         return normalize_email(self.cleaned_data["customer_email"])
 
     def clean(self):
+        """Validate that the selected time range is logically correct.
+
+        Returns:
+            The cleaned form data.
+
+        Raises:
+            ValidationError: If the end time is not after the start time.
+        """
         cleaned_data = super().clean()
         start_time = cleaned_data.get("start_time")
         end_time = cleaned_data.get("end_time")
@@ -56,5 +79,7 @@ class BookingForm(forms.ModelForm):
 
 
 class AvailabilityDateForm(forms.Form):
+    """Simple form used to select a booking date."""
+
     date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
 

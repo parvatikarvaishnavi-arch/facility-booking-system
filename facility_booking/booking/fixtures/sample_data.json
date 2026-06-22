@@ -1,7 +1,7 @@
 [
   {
     "model": "booking.facility",
-    "pk": 1,
+    "pk": "daceb150f7364bc88c256a9251749ff2",
     "fields": {
       "name": "Grand Hall",
       "slug": "grand-hall",
@@ -16,7 +16,7 @@
   },
   {
     "model": "booking.facility",
-    "pk": 2,
+    "pk": "2b2d2101cd524a218c6f722482793446",
     "fields": {
       "name": "Conference Hall",
       "slug": "conference-hall",
@@ -31,7 +31,7 @@
   },
   {
     "model": "booking.facility",
-    "pk": 3,
+    "pk": "d1b2bcfeabc1499aa65ad5e1850a398d",
     "fields": {
       "name": "Podcast Studio",
       "slug": "podcast-studio",
@@ -46,7 +46,7 @@
   },
   {
     "model": "booking.facility",
-    "pk": 4,
+    "pk": "71d55194c07543a1a4d0006df96e242c",
     "fields": {
       "name": "Photo Studio",
       "slug": "photo-studio",
@@ -61,7 +61,7 @@
   },
   {
     "model": "booking.facility",
-    "pk": 5,
+    "pk": "084f0a96bb3c48f189a0bfef7d567fcb",
     "fields": {
       "name": "Member Lounge",
       "slug": "member-lounge",

@@ -1,10 +1,13 @@
+"""Admin configuration for the booking application."""
 from django.contrib import admin
 
-from .models import Booking, ComplimentaryLounge, Facility
+from .models import Booking, Facility
 
 
 @admin.register(Facility)
 class FacilityAdmin(admin.ModelAdmin):
+    """Admin configuration for facility records."""
+
     list_display = (
         "name",
         "facility_type",
@@ -21,6 +24,8 @@ class FacilityAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
+    """Admin configuration for booking records."""
+
     list_display = (
         "facility",
         "customer_name",
@@ -35,10 +40,4 @@ class BookingAdmin(admin.ModelAdmin):
     list_filter = ("facility__facility_type", "status", "is_member", "is_complimentary")
     search_fields = ("customer_name", "customer_email", "facility__name")
     date_hierarchy = "booking_date"
-
-
-@admin.register(ComplimentaryLounge)
-class ComplimentaryLoungeAdmin(admin.ModelAdmin):
-    list_display = ("customer_email", "customer_name", "free_booking_used", "used_at")
-    search_fields = ("customer_email", "customer_name")
 

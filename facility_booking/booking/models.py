@@ -1,9 +1,18 @@
+"""Database models for the facility booking system."""
+import uuid
+
 from django.db import models
 from django.db.models import F, Q
 
 
 class Facility(models.Model):
+    """Represents a bookable facility such as a hall, studio, or lounge."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     class Type(models.TextChoices):
+        """Enumerated facility categories."""
+
         HALL = "hall", "Hall"
         STUDIO = "studio", "Studio"
         LOUNGE = "lounge", "Lounge"
@@ -19,6 +28,8 @@ class Facility(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """Metadata for facility records."""
+
         ordering = ["facility_type", "name"]
         constraints = [
             models.UniqueConstraint(
@@ -26,17 +37,24 @@ class Facility(models.Model):
                 name="unique_facility_type_slug",
             ),
             models.CheckConstraint(
-                check=Q(operating_end__gt=F("operating_start")),
+                condition=Q(operating_end__gt=F("operating_start")),
                 name="facility_operating_end_after_start",
             ),
         ]
 
     def __str__(self):
+        """Return a readable label for a facility."""
         return f"{self.name} ({self.get_facility_type_display()})"
 
 
 class Booking(models.Model):
+    """Represents a confirmed or cancelled reservation for a facility."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     class Status(models.TextChoices):
+        """Possible booking states."""
+
         CONFIRMED = "confirmed", "Confirmed"
         CANCELLED = "cancelled", "Cancelled"
 
@@ -62,6 +80,8 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Metadata for booking records."""
+
         ordering = ["booking_date", "start_time"]
         indexes = [
             models.Index(fields=["facility", "booking_date", "status"]),
@@ -69,35 +89,16 @@ class Booking(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=Q(end_time__gt=F("start_time")),
+                condition=Q(end_time__gt=F("start_time")),
                 name="booking_end_after_start",
             ),
         ]
 
     def __str__(self):
+        """Return a readable label for a booking."""
         return (
             f"{self.customer_name} - {self.facility.name} - "
             f"{self.booking_date} {self.start_time}-{self.end_time}"
         )
 
-
-class ComplimentaryLounge(models.Model):
-    customer_email = models.EmailField(unique=True)
-    customer_name = models.CharField(max_length=120, blank=True)
-    free_booking_used = models.BooleanField(default=False)
-    booking = models.OneToOneField(
-        Booking,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="complimentary_lounge_record",
-    )
-    used_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["customer_email"]
-
-    def __str__(self):
-        return self.customer_email
 
