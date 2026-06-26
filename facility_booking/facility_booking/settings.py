@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-local-development-key")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+    for host in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,vaishnavi56.pythonanywhere.com").split(",")
     if host.strip()
 ]
 
@@ -119,3 +119,10 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+TIME_INPUT_FORMATS = [
+    '%I:%M %p',     # '01:00 PM'
+    '%I:%M%p',      # '01:00PM'
+    '%H:%M:%S',     # 24-hour fallback
+    '%H:%M',
+]

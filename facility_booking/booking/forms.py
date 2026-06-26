@@ -22,8 +22,8 @@ class BookingForm(forms.ModelForm):
         ]
         widgets = {
             "booking_date": forms.DateInput(attrs={"type": "date"}),
-            "start_time": forms.TimeInput(attrs={"type": "time", "step": 1800},format='%I:%M %P'),
-            "end_time": forms.TimeInput(attrs={"type": "time", "step": 1800}, format='%I:%M %p'),
+            "start_time": forms.TimeInput(attrs={"type": "time", "step": 1800}),
+            "end_time": forms.TimeInput(attrs={"type": "time", "step": 1800}),
         }
         labels = {
             "is_member": "Book as member",
