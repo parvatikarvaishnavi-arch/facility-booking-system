@@ -4,7 +4,6 @@ from django import forms
 from .models import Booking, Facility
 from .services import normalize_email
 
-
 class BookingForm(forms.ModelForm):
     """Form for creating and validating booking requests."""
 
@@ -23,8 +22,8 @@ class BookingForm(forms.ModelForm):
         ]
         widgets = {
             "booking_date": forms.DateInput(attrs={"type": "date"}),
-            "start_time": forms.TimeInput(attrs={"type": "time", "step": 1800}),
-            "end_time": forms.TimeInput(attrs={"type": "time", "step": 1800}),
+            "start_time": forms.TimeInput(attrs={"type": "time", "step": 1800},format='%I:%M %P'),
+            "end_time": forms.TimeInput(attrs={"type": "time", "step": 1800}, format='%I:%M %p'),
         }
         labels = {
             "is_member": "Book as member",

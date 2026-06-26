@@ -69,12 +69,12 @@ if use_sqlite or running_tests or not db_engine:
 else:
     DATABASES = {
         "default": {
-            "ENGINE": db_engine,
-            "NAME": os.getenv("DB_NAME", "facility_booking"),
-            "USER": os.getenv("DB_USER", "root"),
-            "PASSWORD": os.getenv("DB_PASSWORD", ""),
-            "HOST": os.getenv("DB_HOST", "127.0.0.1"),
-            "PORT": os.getenv("DB_PORT", "3306"),
+            "ENGINE": 'django.db.backends.mysql',
+            "NAME":    'facility_booking',
+            "USER":     'root',
+            "PASSWORD":   'Facility@2026',
+            "HOST":        'localhost',
+            "PORT": '3306',
             "OPTIONS": {
                 "charset": "utf8mb4",
             },
